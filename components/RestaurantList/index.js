@@ -16,24 +16,24 @@ const query = gql`
     }
 `;
 
-const RestaurantList = () => {
+const RestaurantList = (props) => {
     const { loading, error, data } = useQuery(query);
-    //console.log(data.restaurants);
 
-    if (data !== undefined ) {
-        console.log('定義されてます');
-    } else {
-        console.log('未定義です');
-    }
+    if (error) return "レストランの読み込みに失敗しました";
+
+    if (loading) return "読み込み中";
 
     if (data) {
+        const searchQuery = data.restaurants.filter((restaurant) => 
+            restaurant.name.toLowerCase().includes(props.search)
+        );
+
         return (
             <Row>
-                {data.restaurants.map((res) => (
+                {searchQuery.map((res) => (
                     <Col xs="6" sm="4">
                         <Card style={{ margin: "0.0.5rem 20px 0.5rem" }}>
                             <CardImg 
-                                //src="http://localhost:1337/uploads/thumbnail_restaurant1_9d349a51a9.jpg" 
                                 src={`${process.env.NEXT_PUBLIC_API_URL}${res.image[0].url}`}
                                 top={true} 
                                 style={{ height: 250 }} 
